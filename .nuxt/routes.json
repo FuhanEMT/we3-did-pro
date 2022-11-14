@@ -1,5 +1,12 @@
 [
   {
+    "name": "pay",
+    "path": "/pay",
+    "component": "/Users/code/we3-did-pro/pages/pay/index.vue",
+    "chunkName": "pages/pay/index",
+    "_name": "_6bc441be"
+  },
+  {
     "name": "index",
     "path": "/",
     "component": "/Users/code/we3-did-pro/pages/index.vue",
