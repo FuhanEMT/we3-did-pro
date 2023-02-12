@@ -30,75 +30,39 @@
       </div>
     </div>
 
-    <div class="content">
-      <div class="left">
-        <div class="banner">
-          <img src="@/assets/logo_slices/banner.png" />
-        </div>
-        <div class="size">
-          Get your web3 domain, replace your complex address
-        </div>
-        <div class="item-ilb">
-          <div class="item">Decentralized</div>
-          <div class="item">Cross-chain</div>
-          <div class="item">Open source</div>
-          <div class="item">community-driven</div>
-        </div>
-
-        <div class="seach-box">
-          <div class="input">
-            <input placeholder="get your web3 name" type="text" />
-            <div class="size">.web3</div>
-            <img src="@/assets/logo_slices/search.png" />
-          </div>
-          <div class="btn">Search</div>
-        </div>
-
-        <div class="nav_size">.web3 = .ape / .bean / .cat / .bird...</div>
-      </div>
-      <div class="right">
-        <img src="@/assets/logo_slices/show.png" alt="" />
-        <img src="@/assets/logo_slices/antins.png" alt="" />
-      </div>
-    </div>
-
-    <div class="footer">
-      <div class="box">
+    <div class="content content_back">
+      <div class="center">
         <div class="left">
           <div>
-            <img src="@/assets/logo_slices/footer.png" />
-            <div>
-              .web3 is a decentralized digital identity system that is building
-              a trust,transparency and interoperable chain for users and dApps
+            <div class="left_title">Build Your</div>
+            <div class="left_content">
+              <span>Web3</span>
+              <span>Profile</span>
             </div>
           </div>
+          <div>
+            Just connect wallet to automatically generate your decentralized
+            profile. Let us know moreabout you and go social on web3
+          </div>
+          <button class="btn">Build now</button>
         </div>
-        <div class="right">
-          <div class="item">
-            <div>Resources</div>
-            <div>Whitebook</div>
-            <div>Brand Kit</div>
-          </div>
-          <div class="item">
-            <div>Developer</div>
-            <div>Github</div>
-            <div>Integration</div>
-          </div>
-          <div class="item">
-            <div>Community</div>
-            <div>Twitter</div>
-            <div>Discord</div>
-            <div>Medium</div>
-          </div>
+        <div
+          class="right"
+          @mousemove="getMousemoveEnv($event)"
+          @mouseleave="getMouseleaveEnv($event)"
+        >
+          <img id="select" src="@/assets/img/select.png" alt="" />
+          <img id="user" src="@/assets/img/user.png" alt="" />
+          <img id="back" src="@/assets/img/back.png" alt="" />
         </div>
       </div>
     </div>
   </div>
-</template>
+</template> 
 
 <script lang="js">
 import Vue from "vue";
-
+import '../assets/font/fonts.css'
 export default Vue.extend({
   name: "IndexPage",
   data() {
@@ -106,11 +70,50 @@ export default Vue.extend({
       // web授权虚拟化对象
       webProvider: null,
       // 钱包地址
-      metamask: null
+      metamask: null,
+      // 动画类名名称
+      animaClassName: [
+        {name: 'user' , translIndex: 30},
+        {name: 'select' , translIndex: 60},
+        {name: 'back' , translIndex: -10}
+      ],
+      // 动画倍数
+      multiple: 20
     };
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
+    // 批量选择类名
+    getElementByIdContoirer(className){
+      return document.getElementById(className);
+    },
+    getMousemoveEnv(e){
+      let _this = this
+      // 优化windows动画帧数
+        window.requestAnimationFrame(function(){
+          // 传递坐标对象
+          _this.transformElement(e.clientX, e.clientY);
+        });
+    },
+    transformElement(x , y){
+      for (let index = 0; index < this.animaClassName.length; index++) {
+          let calcY = ( x - this.getElementByIdContoirer(this.animaClassName[index].name).getBoundingClientRect().x - (this.getElementByIdContoirer(this.animaClassName[index].name).getBoundingClientRect().width / 2) ) / this.multiple
+
+          let calcX = ( y - this.getElementByIdContoirer(this.animaClassName[index].name).getBoundingClientRect().y - (this.getElementByIdContoirer(this.animaClassName[index].name).getBoundingClientRect().height / 2) ) / this.multiple * 1
+
+          this.getElementByIdContoirer(this.animaClassName[index].name).style.transform  = "rotateX("+ calcX +"deg) "
+                        + "rotateY("+ calcY +"deg)" + "translateZ(" + this.animaClassName[index].translIndex + "px" + ")";
+        }
+    },
+    // 移出
+    getMouseleaveEnv(e){
+      window.requestAnimationFrame(function(){
+        for (let index = 0; index < this.animaClassName.length; index++) {
+          this.getElementByIdContoirer(this.animaClassName[index].name).style.transform  = "rotateX(0deg) " + "rotateY(0deg)";
+        }
+      });
+    },
     // 连接 Metamask 钱包
     getMetamask() {
       if (window.ethereum) {
@@ -152,6 +155,10 @@ export default Vue.extend({
   width: 100%;
 }
 .header {
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: 1;
   .right-secretKey {
     display: flex;
     align-items: center;
@@ -200,7 +207,7 @@ export default Vue.extend({
   }
   max-width: 1210px;
   min-width: 1000px;
-  padding: 65px 0px;
+  padding: 65px 60px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -246,61 +253,106 @@ export default Vue.extend({
     }
   }
   .btn {
-    width: 20%;
+    width: 100px;
     background: #000;
     color: #fff;
-    padding: 21.5px 10px;
+    // padding: 21.5px 10px;
     text-align: center;
   }
 }
+.content_back {
+  background: linear-gradient(360deg, #fff3eb 0%, #e0efe2 100%, #e0efe2 100%);
+}
 .content {
+  position: absolute;
+  right: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100%;
   width: 1210px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   margin: 0 auto;
-  .left {
-    width: 50%;
-    .banner {
-      width: 600px;
-      img {
-        width: 100%;
+  .center {
+    width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    padding: 0 60px;
+    .left {
+      width: 75%;
+      font-family: FranklinGothic-Heavy;
+      .left_title {
+        font-size: 95px;
+        font-weight: bold;
+        color: #000;
       }
-    }
-    .size {
-      font-size: 20px;
-      margin-top: 20px;
-    }
-    .item-ilb {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 40px 0;
-      .item {
-        width: 23.5%;
-        text-align: center;
+      .left_content {
+        font-size: 95px;
+        font-weight: bold;
+        position: relative;
+        top: -30px;
+        span:nth-child(1) {
+          color: #057b65;
+        }
+        span:nth-child(2) {
+          color: #000;
+        }
+      }
+      .btn {
+        background: #000;
+        color: #fff;
+        font-size: 22px;
+        padding: 10px 70px;
+        border: 0;
+        // width:150px;
         border-radius: 5px;
-        border: 1px solid #e5e5e5;
-        padding: 5px 10px;
+        margin-top: 100px;
       }
     }
-  }
-  .right {
-    width: 50%;
-    text-align: right;
-    position: relative;
-    img:nth-child(1) {
-      width: 550px;
+    .right {
+      width: 55%;
+      text-align: center;
       position: relative;
-      z-index: 1;
-    }
-    img:nth-child(2) {
-      width: 550px;
-      position: absolute;
-      left: -20px;
-      top: -65px;
+      // animation: reverseRotate 5s linear infinite;
+      // transform-style: preserve-3d;
+      // perspective: 100px;
+      transform-style: preserve-3d;
+      perspective: 500px;
+      .route {
+        // animation: rotate 5s linear infinite;
+        // transform-style: preserve-3d;
+        // perspective: 100px;
+      }
+      #user {
+        position: absolute;
+        width: 60%;
+        left: 20%;
+        bottom: 0;
+        z-index: 1;
+        transition: all 0.1s;
+        // transform: rotateX(15deg) rotateY(30deg) translateZ(50px);
+        // transform-style: preserve-3d;
+      }
+      #select {
+        position: absolute;
+        width: 40%;
+        right: -80px;
+        bottom: 20px;
+        z-index: 2;
+        transition: all 0.1s;
+        // transform: rotateX(15deg) rotateY(30deg);
+        // transform-style: preserve-3d;
+      }
+      #back {
+        width: 100%;
+        transition: all 0.1s;
+        z-index: 0;
+        // transform: rotateX(15deg) rotateY(30deg);
+        // transform-style: preserve-3d;
+      }
     }
   }
 }
@@ -313,8 +365,9 @@ export default Vue.extend({
   bottom: 0;
   padding: 40px 0 70px 0;
   z-index: 2;
-  .box{
-    width: 1200px; margin:0 auto;
+  .box {
+    width: 1200px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
   }
@@ -351,4 +404,15 @@ export default Vue.extend({
     }
   }
 }
+
+// @keyframes rotate {
+//   100% {
+//     transform: rotate(360deg);
+//   }
+// }
+// @keyframes reverseRotate {
+//   100% {
+//     transform: rotate(-360deg);
+//   }
+// }
 </style>
